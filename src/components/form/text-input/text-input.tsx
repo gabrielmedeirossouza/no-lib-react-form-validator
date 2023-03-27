@@ -33,7 +33,7 @@ export function TextInput(props: Props) {
   React.useEffect(() => {
     if (!props.validator) return
 
-    props.validator.OnValidate(() => {
+    const callback = props.validator.OnValidate(() => {
       if (!props.validator) return
 
       setIsValidatorDispatchedValidate(true)
@@ -41,6 +41,8 @@ export function TextInput(props: Props) {
 
       setMessageErrors(errorMessages.length ? errorMessages : [])
     })
+
+    return () => props.validator?.RemoveOnValidateEvent(callback)
   }, [])
 
   return (

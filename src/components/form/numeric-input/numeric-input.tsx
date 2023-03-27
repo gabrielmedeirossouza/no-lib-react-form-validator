@@ -103,7 +103,7 @@ export function NumericInput(props: Props) {
   React.useEffect(() => {
     if (!props.validator) return
 
-    props.validator.OnValidate(() => {
+    const callback = props.validator.OnValidate(() => {
       if (!props.validator) return
 
       setIsValidatorDispatchedValidate(true)
@@ -111,6 +111,8 @@ export function NumericInput(props: Props) {
 
       setMessageErrors(errorMessages.length ? errorMessages : [])
     })
+
+    return () => props.validator?.RemoveOnValidateEvent(callback)
   }, [])
 
   React.useEffect(() => {

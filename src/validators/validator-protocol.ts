@@ -56,6 +56,17 @@ export abstract class ValidatorProtocol<T> {
     return callback
   }
 
+  public RemoveOnValidateEvent(callback: () => void): void {
+    const index = this._onValidateCallbacks.findIndex(attachedCallback => attachedCallback === callback)
+
+    if (index === -1) {
+      console.error("Validator RemoveOnValidateEvent: Could not find callback function event.")
+      return
+    }
+
+    this._onValidateCallbacks.splice(index, 1)
+  }
+
   public Validate() {
     this._ClearValidatorStatus()
 
