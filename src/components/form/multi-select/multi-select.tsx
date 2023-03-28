@@ -1,31 +1,23 @@
 import React from "react"
 import { useClickedOutside } from "../../../hooks/ui"
-import { ArrayValidator } from "../../../validators"
-import { BaseSelect, Item } from "../base-select"
-import { Input as SharedInput } from '../base-select/styles'
+import { BaseSelect, Input as SharedInput } from "../base-select"
 import { useValidatorErrorMessages } from "../base/useValidatorErrorMessages"
 import { Input } from './styles'
+import type { ItemProtocol, PropsArrayProtocol } from '../base-select'
 
-type Validator<T extends string | number> = T extends string
-  ? ArrayValidator<string>
-  : ArrayValidator<number>
-
-interface Props<T extends string | number> {
-  label?: string
-  items: Item<T>[]
-  validator?: Validator<T>
-  clearOption?: [label: string, value: T]
-  default?: T[]
-}
-
-export function MultiSelect<T extends string | number>(props: Props<T>) {
-  const inputContainerRef = useClickedOutside(onClickOutside)
+export function MultiSelect<T extends string | number>(props: PropsArrayProtocol<T>) {
   const inputRef = React.useRef<HTMLSpanElement>(null)
-  const [selectedItems, setSelectedItems] = React.useState<Item<T>[]>([])
+  const [selectedItems, setSelectedItems] = React.useState<ItemProtocol<T>[]>([])
   const [isOpenDropdown, setIsOpenDropdown] = React.useState(false)
+  const inputContainerRef = useClickedOutside(onClickOutside)
   const { validated, messageErrors } = useValidatorErrorMessages(props.validator)
 
-  function handleItemClick(item: Item<T>) {
+  const clearOption = props.clearOption ? {
+    label: props.clearOption[0],
+    value: props.clearOption[1]
+  } : undefined
+
+  function handleItemClick(item: ItemProtocol<T>) {
     const itemIncludedInSelectedItems = Boolean(selectedItems.find(selectedItem => selectedItem.value === item.value))
 
     if (itemIncludedInSelectedItems) {
@@ -36,7 +28,7 @@ export function MultiSelect<T extends string | number>(props: Props<T>) {
     handleAddItem(item)
   }
 
-  function handleAddItem(item: Item<T>) {
+  function handleAddItem(item: ItemProtocol<T>) {
     if (item.value === props.clearOption?.[1]) {
       updateValue([item])
       return
@@ -47,19 +39,19 @@ export function MultiSelect<T extends string | number>(props: Props<T>) {
     updateValue(newItems)
   }
 
-  function handleRemoveItem(item: Item<T>) {
+  function handleRemoveItem(item: ItemProtocol<T>) {
     const newItems = selectedItems.filter(selectedItem => selectedItem.value !== item.value)
     updateValue(newItems)
   }
 
-  function updateValue(items: Item<T>[]) {
+  function updateValue(items: ItemProtocol<T>[]) {
     setSelectedItems(items)
 
     if (inputRef.current)
       inputRef.current.textContent = items.map(item => item.label).join(", ")
 
     if (props.validator)
-      props.validator.value = items.map(item => item.value) as string[] | number[]
+      props.validator.value = items.map(item => item.value)
 
     if (props.validator && validated)
       props.validator.Validate()
@@ -70,7 +62,7 @@ export function MultiSelect<T extends string | number>(props: Props<T>) {
   }
 
   function attemptGetItemsByValues(values: T[]) {
-    const allItems = [...props.items, { label: props.clearOption?.[0], value: props.clearOption?.[1] }].filter((item): item is Item<T> => Boolean(item))
+    const allItems = [...props.items, clearOption].filter((item): item is ItemProtocol<T> => Boolean(item))
     const expectedItems = allItems.filter(item => values.includes(item.value))
 
     if (expectedItems.length !== values.length)
@@ -98,7 +90,7 @@ export function MultiSelect<T extends string | number>(props: Props<T>) {
         label={props.label}
         isOpenDropdown={isOpenDropdown}
         dropdownItems={props.items}
-        clearOption={props.clearOption}
+        clearOption={clearOption}
         onItemClick={handleItemClick}
         messageErrors={messageErrors}
       >

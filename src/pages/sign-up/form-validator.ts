@@ -22,3 +22,5 @@ export const validatorPool = new ValidatorPool({
   preferencePodcastPlace,
   preferencePodcastGenre
 })
+
+export const { validators } = validatorPool

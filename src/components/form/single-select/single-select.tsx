@@ -1,35 +1,27 @@
 import React from "react";
 import { useClickedOutside } from "../../../hooks/ui";
-import { NumberValidator, StringValidator } from "../../../validators";
-import { BaseSelect, Item } from "../base-select";
-import { Input as SharedInput } from '../base-select/styles'
+import { BaseSelect, Input as SharedInput } from "../base-select";
 import { useValidatorErrorMessages } from "../base/useValidatorErrorMessages";
 import { Input } from './styles'
+import type { ItemProtocol, PropsProtocol } from '../base-select'
 
-type Validator<T extends string | number> = T extends string
-  ? StringValidator
-  : NumberValidator
-
-interface Props<T extends string | number> {
-  label?: string
-  items: Item<T>[]
-  validator?: Validator<T>
-  clearOption?: [label: string, value: T]
-  default?: T
-}
-
-export function SingleSelect<T extends string | number>(props: Props<T>) {
+export function SingleSelect<T extends string | number>(props: PropsProtocol<T>) {
   const inputRef = React.useRef<HTMLSpanElement>(null)
   const inputContainerRef = useClickedOutside(onClickOutside);
   const [isOpenDropdown, setIsOpenDropdown] = React.useState(false)
   const { validated, messageErrors } = useValidatorErrorMessages(props.validator)
 
-  function handleItemClick(item: Item<T>) {
+  const clearOption = props.clearOption ? {
+    label: props.clearOption[0],
+    value: props.clearOption[1]
+  } : undefined
+
+  function handleItemClick(item: ItemProtocol<T>) {
     updateValue(item)
     setIsOpenDropdown(false)
   }
 
-  function updateValue(item: Item<T>) {
+  function updateValue(item: ItemProtocol<T>) {
     if (inputRef.current)
       inputRef.current.textContent = item.label
 
@@ -45,7 +37,7 @@ export function SingleSelect<T extends string | number>(props: Props<T>) {
   }
 
   function attemptGetItemByValue(value: T) {
-    const allItems = [...props.items, { label: props.clearOption?.[0], value: props.clearOption?.[1] }].filter((item): item is Item<T> => Boolean(item))
+    const allItems = [...props.items, clearOption].filter((item): item is ItemProtocol<T> => Boolean(item))
     const expectedItem = allItems.find(item => item.value === value)
 
     if (!expectedItem)
@@ -68,7 +60,7 @@ export function SingleSelect<T extends string | number>(props: Props<T>) {
         label={props.label}
         isOpenDropdown={isOpenDropdown}
         dropdownItems={props.items}
-        clearOption={props.clearOption}
+        clearOption={clearOption}
         onItemClick={handleItemClick}
         messageErrors={messageErrors}
       >
