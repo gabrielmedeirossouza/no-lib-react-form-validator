@@ -60,7 +60,7 @@ export abstract class ValidatorProtocol<T> {
     const index = this._onValidateCallbacks.findIndex(attachedCallback => attachedCallback === callback)
 
     if (index === -1) {
-      console.error("Validator RemoveOnValidateEvent: Could not find callback function event.")
+      console.error("Validator RemoveOnValidateEvent: cannot find callback function event.")
       return
     }
 

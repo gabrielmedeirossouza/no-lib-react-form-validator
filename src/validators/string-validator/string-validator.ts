@@ -14,7 +14,7 @@ export class StringValidator extends ValidatorProtocol<string> {
       const isEmpty = !Boolean(value.length)
 
       if (isEmpty)
-        return this.Fail(message ?? "Field could not be empty.")
+        return this.Fail(message ?? "Field cannot be empty.")
 
       return this.Ok(value)
     })
@@ -53,6 +53,20 @@ export class StringValidator extends ValidatorProtocol<string> {
     })
 
     compare.OnValidate(() => this.Validate())
+
+    return this
+  }
+
+  public Email(message?: string): StringValidator {
+    this.AttachRule((value) => {
+      const EMAIL_REGEX: RegExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      const isValidEmail = EMAIL_REGEX.test(value);
+
+      if (!isValidEmail)
+        return this.Fail(message ?? `Field ${this.fieldName} must be a valid email.`)
+
+      return this.Ok(value)
+    })
 
     return this
   }

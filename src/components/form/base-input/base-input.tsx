@@ -1,11 +1,7 @@
-import React from "react"
-import { Container, Label, Error } from './styles'
+import { Container, Label, Error } from '../base/styles'
+import type { DefaultFormComponentProtocol } from "../base/protocols"
 
-interface Props {
-  children: React.ReactNode
-  label?: string
-  messageErrors?: string[]
-}
+interface Props extends DefaultFormComponentProtocol {}
 
 export function BaseInput(props: Props) {
   return (

@@ -12,7 +12,7 @@ export class NumberValidator extends ValidatorProtocol<number> {
   public NotZero(message?: string): NumberValidator {
     this.AttachRule((value) => {
       if (value === 0)
-        return this.Fail(message ?? "The value could not be zero.")
+        return this.Fail(message ?? "The value cannot be zero.")
 
       return this.Ok(value)
     })

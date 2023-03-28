@@ -38,7 +38,7 @@ export function NumericInput(props: Props) {
     console.error(`NumericInput: defaultValue must be equal or greater than minValue: ${minValue}`)
 
   if (maxValue < minValue)
-    console.error(`NumericInput: max value could not be less than min value. min: ${props.min}, max: ${props.max}`)
+    console.error(`NumericInput: max value cannot be less than min value. min: ${props.min}, max: ${props.max}`)
 
   function handleChange(rawValue: string) {
     const expectNumeric = parseStringToNumeric(rawValue)

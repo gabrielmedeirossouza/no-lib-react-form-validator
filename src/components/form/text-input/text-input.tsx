@@ -24,8 +24,10 @@ export function TextInput(props: Props) {
     if (props.onChange)
       props.onChange(value)
 
-    if (isValidatorDispatchedValidate && props.validator) {
+    if (props.validator)
       props.validator.value = value
+
+    if (props.validator && isValidatorDispatchedValidate) {
       props.validator.Validate()
     }
   }
@@ -51,3 +53,4 @@ export function TextInput(props: Props) {
     </BaseInput>
   )
 }
+
