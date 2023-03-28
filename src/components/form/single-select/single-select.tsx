@@ -6,7 +6,7 @@ import { Input } from './styles'
 import type { ItemProtocol, PropsProtocol } from '../base-select'
 
 export function SingleSelect<T extends string | number>(props: PropsProtocol<T>) {
-  const inputRef = React.useRef<HTMLSpanElement>(null)
+  const inputRef = React.useRef<HTMLSpanElement>(null) // TODO: Change to Input. SEO and UX
   const inputContainerRef = useClickedOutside(onClickOutside);
   const [isOpenDropdown, setIsOpenDropdown] = React.useState(false)
   const { validated, messageErrors } = useValidatorErrorMessages(props.validator)

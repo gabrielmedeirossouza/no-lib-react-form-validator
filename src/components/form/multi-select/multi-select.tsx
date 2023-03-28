@@ -6,7 +6,7 @@ import { Input } from './styles'
 import type { ItemProtocol, PropsArrayProtocol } from '../base-select'
 
 export function MultiSelect<T extends string | number>(props: PropsArrayProtocol<T>) {
-  const inputRef = React.useRef<HTMLSpanElement>(null)
+  const inputRef = React.useRef<HTMLSpanElement>(null) // TODO: Change to Input. SEO and UX
   const [selectedItems, setSelectedItems] = React.useState<ItemProtocol<T>[]>([])
   const [isOpenDropdown, setIsOpenDropdown] = React.useState(false)
   const inputContainerRef = useClickedOutside(onClickOutside)
