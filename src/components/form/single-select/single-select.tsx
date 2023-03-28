@@ -1,37 +1,35 @@
 import React from "react";
 import { useClickedOutside } from "../../../hooks/ui";
 import { NumberValidator, StringValidator } from "../../../validators";
-import { BaseSelect, DropdownItemsTypes } from "../base-select";
+import { BaseSelect, Item } from "../base-select";
 import { Input as SharedInput } from '../base-select/styles'
 import { useValidatorErrorMessages } from "../base/useValidatorErrorMessages";
 import { Input } from './styles'
 
-type ValidatorType<T extends string | number> = T extends string
+type Validator<T extends string | number> = T extends string
   ? StringValidator
   : NumberValidator
 
-type ExtractItem<T> = T extends (infer I)[] ? I : never
-
-interface Props<Items extends DropdownItemsTypes, Item extends ExtractItem<Items>> {
+interface Props<T extends string | number> {
   label?: string
-  items: Items
-  validator?: ValidatorType<Item["value"]>
-  clearOption?: Item
-  default?: Item["value"]
+  items: Item<T>[]
+  validator?: Validator<T>
+  clearOption?: [label: string, value: T]
+  default?: T
 }
 
-export function SingleSelect<Items extends DropdownItemsTypes, Item extends ExtractItem<Items>>(props: Props<Items, Item>) {
+export function SingleSelect<T extends string | number>(props: Props<T>) {
   const inputRef = React.useRef<HTMLSpanElement>(null)
   const inputContainerRef = useClickedOutside(onClickOutside);
   const [isOpenDropdown, setIsOpenDropdown] = React.useState(false)
   const { validated, messageErrors } = useValidatorErrorMessages(props.validator)
 
-  function handleItemClick(item: Item) {
+  function handleItemClick(item: Item<T>) {
     updateValue(item)
     setIsOpenDropdown(false)
   }
 
-  function updateValue(item: Item) {
+  function updateValue(item: Item<T>) {
     if (inputRef.current)
       inputRef.current.textContent = item.label
 
@@ -46,8 +44,8 @@ export function SingleSelect<Items extends DropdownItemsTypes, Item extends Extr
     setIsOpenDropdown(false)
   }
 
-  function attemptGetItemByValue(value: Item["value"]) {
-    const allItems = [...props.items, props.clearOption].filter((item): item is Item => Boolean(item))
+  function attemptGetItemByValue(value: T) {
+    const allItems = [...props.items, { label: props.clearOption?.[0], value: props.clearOption?.[1] }].filter((item): item is Item<T> => Boolean(item))
     const expectedItem = allItems.find(item => item.value === value)
 
     if (!expectedItem)

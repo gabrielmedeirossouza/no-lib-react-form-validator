@@ -4,6 +4,17 @@ import { LISTENING_PODCAST_ITEMS, PODCAST_GENRE_ITEMS } from './@constants'
 import { validatorPool as vPool } from './form-validator'
 import { Container, Form } from './styles'
 
+const {
+  firstName,
+  lastName,
+  age,
+  email,
+  preferencePodcastPlace,
+  preferencePodcastGenre,
+  newPassword,
+  confirmNewPassword
+} = vPool.validators
+
 export function SignUp() {
 
   function handleSubmit(form: React.FormEvent) {
@@ -19,26 +30,29 @@ export function SignUp() {
   return (
     <Container>
       <Form onSubmit={handleSubmit}>
-        <TextInput label='Primeiro Nome' validator={vPool.validators.firstName} />
-        <TextInput label='Último Nome' validator={vPool.validators.lastName} />
-        <NumericInput label='Idade' min={0} max={125} validator={vPool.validators.age} />
-        <TextInput label='E-mail' validator={vPool.validators.email} />
+        <TextInput label='Primeiro Nome' validator={firstName} />
+        <TextInput label='Último Nome' validator={lastName} />
+        <NumericInput label='Idade' min={0} max={125} validator={age} />
+        <TextInput label='E-mail' validator={email} />
+
         <SingleSelect
           label='Em qual ambiente você escuta podcast?'
           items={LISTENING_PODCAST_ITEMS}
           default={0}
-          clearOption={{ label: "Selecionar", value: 0 }}
-          validator={vPool.validators.preferencePodcastPlace}
+          clearOption={["Selecionar", 0]}
+          validator={preferencePodcastPlace}
         />
+
         <MultiSelect
           label='Quais os gêneros de podcast que você mais gosta?'
           items={PODCAST_GENRE_ITEMS}
-          validator={vPool.validators.preferencePodcastGenre}
+          validator={preferencePodcastGenre}
           default={[0]}
-          clearOption={{ label: "Selecionar", value: 0 }}
+          clearOption={["Selecionar", 0]}
         />
-        <TextInput label='Senha' type="password" validator={vPool.validators.newPassword} />
-        <TextInput label='Confirme a senha' type="password" validator={vPool.validators.confirmNewPassword} />
+        
+        <TextInput label='Senha' type="password" validator={newPassword} />
+        <TextInput label='Confirme a senha' type="password" validator={confirmNewPassword} />
 
         <button type="submit">Enviar</button>
       </Form>

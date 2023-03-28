@@ -2,23 +2,20 @@ import { DefaultFormComponentProtocol } from '../base/protocols'
 import { Container, Label, Error } from '../base/styles'
 import { Input } from './styles'
 
-type DropdownItem<T extends string | number> = {
+export type Item<T extends string | number> = {
   label: string
   value: T
 }
 
-export type DropdownItemsTypes = DropdownItem<string>[] | DropdownItem<number>[]
-export type DropdownItemType = DropdownItemsTypes extends (infer Item)[] ? Item : never
-
-interface Props extends DefaultFormComponentProtocol {
+interface Props<T extends string | number> extends DefaultFormComponentProtocol {
   isOpenDropdown: boolean
-  dropdownItems: DropdownItemsTypes
-  onItemClick(item: DropdownItemType): void
-  clearOption?: DropdownItemType
+  dropdownItems: Item<T>[]
+  onItemClick(item: Item<T>): void
+  clearOption?: [label: string, value: T]
 }
 
-export function BaseSelect(props: Props) {
-  function handleItemClick(event: React.MouseEvent, item: DropdownItemType) {
+export function BaseSelect<T extends string | number>(props: Props<T>) {
+  function handleItemClick(event: React.MouseEvent, item: Item<T>) {
     event.stopPropagation()
     props.onItemClick(item)
   }
@@ -31,8 +28,8 @@ export function BaseSelect(props: Props) {
 
           <Input.DropdownList isOpen={props.isOpenDropdown}>
             {props.clearOption && (
-              <Input.DropdownItem separator onClick={(e) => handleItemClick(e, props.clearOption!)}>
-                {props.clearOption.label}
+              <Input.DropdownItem separator onClick={(e) => handleItemClick(e, { label: props.clearOption![0]!, value: props.clearOption![1]!})}>
+                {props.clearOption[0]}
               </Input.DropdownItem>
             )}
 

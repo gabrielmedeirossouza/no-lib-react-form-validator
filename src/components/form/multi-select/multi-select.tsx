@@ -1,33 +1,31 @@
 import React from "react"
 import { useClickedOutside } from "../../../hooks/ui"
 import { ArrayValidator } from "../../../validators"
-import { BaseSelect, DropdownItemsTypes } from "../base-select"
+import { BaseSelect, Item } from "../base-select"
 import { Input as SharedInput } from '../base-select/styles'
 import { useValidatorErrorMessages } from "../base/useValidatorErrorMessages"
 import { Input } from './styles'
 
-type ValidatorType<T extends string | number> = T extends string
+type Validator<T extends string | number> = T extends string
   ? ArrayValidator<string>
   : ArrayValidator<number>
 
-type ExtractItem<T> = T extends (infer I)[] ? I : never
-
-interface Props<Items extends DropdownItemsTypes, Item extends ExtractItem<Items>> {
+interface Props<T extends string | number> {
   label?: string
-  items: Items
-  validator?: ValidatorType<Item["value"]>
-  clearOption?: Item
-  default?: Item["value"][]
+  items: Item<T>[]
+  validator?: Validator<T>
+  clearOption?: [label: string, value: T]
+  default?: T[]
 }
 
-export function MultiSelect<Items extends DropdownItemsTypes, Item extends ExtractItem<Items>>(props: Props<Items, Item>) {
+export function MultiSelect<T extends string | number>(props: Props<T>) {
   const inputContainerRef = useClickedOutside(onClickOutside)
   const inputRef = React.useRef<HTMLSpanElement>(null)
-  const [selectedItems, setSelectedItems] = React.useState<Item[]>([])
+  const [selectedItems, setSelectedItems] = React.useState<Item<T>[]>([])
   const [isOpenDropdown, setIsOpenDropdown] = React.useState(false)
   const { validated, messageErrors } = useValidatorErrorMessages(props.validator)
 
-  function handleItemClick(item: Item) {
+  function handleItemClick(item: Item<T>) {
     const itemIncludedInSelectedItems = Boolean(selectedItems.find(selectedItem => selectedItem.value === item.value))
 
     if (itemIncludedInSelectedItems) {
@@ -38,23 +36,23 @@ export function MultiSelect<Items extends DropdownItemsTypes, Item extends Extra
     handleAddItem(item)
   }
 
-  function handleAddItem(item: Item) {
-    if (item.value === props.clearOption?.value) {
+  function handleAddItem(item: Item<T>) {
+    if (item.value === props.clearOption?.[1]) {
       updateValue([item])
       return
     }
 
-    const selectedItemsWithoutClearOption = selectedItems.filter(selectedItem => selectedItem.value !== props.clearOption?.value)
+    const selectedItemsWithoutClearOption = selectedItems.filter(selectedItem => selectedItem.value !== props.clearOption?.[1])
     const newItems = [...selectedItemsWithoutClearOption, item]
     updateValue(newItems)
   }
 
-  function handleRemoveItem(item: Item) {
+  function handleRemoveItem(item: Item<T>) {
     const newItems = selectedItems.filter(selectedItem => selectedItem.value !== item.value)
     updateValue(newItems)
   }
 
-  function updateValue(items: Item[]) {
+  function updateValue(items: Item<T>[]) {
     setSelectedItems(items)
 
     if (inputRef.current)
@@ -71,8 +69,8 @@ export function MultiSelect<Items extends DropdownItemsTypes, Item extends Extra
     setIsOpenDropdown(false)
   }
 
-  function attemptGetItemsByValues(values: Item["value"][]) {
-    const allItems = [...props.items, props.clearOption].filter((item): item is Item => Boolean(item))
+  function attemptGetItemsByValues(values: T[]) {
+    const allItems = [...props.items, { label: props.clearOption?.[0], value: props.clearOption?.[1] }].filter((item): item is Item<T> => Boolean(item))
     const expectedItems = allItems.filter(item => values.includes(item.value))
 
     if (expectedItems.length !== values.length)
@@ -88,7 +86,7 @@ export function MultiSelect<Items extends DropdownItemsTypes, Item extends Extra
     if (!expectedItems) return
 
     expectedItems.forEach(item => {
-      if (item.value === props.clearOption?.value && expectedItems.length > 1)
+      if (item.value === props.clearOption?.[1] && expectedItems.length > 1)
         console.warn(`MultiSelect Default load: Default values and clearOption overrides. Please, do not use default values and clearOption together. Default prop: (${props.default?.join(", ")})`)
 
       handleAddItem(item)
