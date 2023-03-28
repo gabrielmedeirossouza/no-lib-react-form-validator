@@ -1,6 +1,7 @@
 import React from 'react'
 import { NumberValidator } from '../../../validators/number-validator'
 import { BaseInput } from '../base-input'
+import { useValidatorErrorMessages } from '../base/useValidatorErrorMessages'
 import { Input } from './styles'
 
 const NULLABLE_VALUES = ["", "-", "0", "-0"]
@@ -24,8 +25,7 @@ interface Props {
 
 export function NumericInput(props: Props) {
   const inputRef = React.useRef<HTMLInputElement>(null)
-  const [messageErrors, setMessageErrors] = React.useState<string[]>([])
-  const [isValidatorDispatchedValidate, setIsValidatorDispatchedValidate] = React.useState(false)
+  const { validated, messageErrors } = useValidatorErrorMessages(props.validator)
 
   const defaultValue = props.default ?? 0
   const minValue = props.min ?? Number.MIN_SAFE_INTEGER
@@ -55,9 +55,9 @@ export function NumericInput(props: Props) {
     const value = Number(rawValue)
     const isEmpty = rawValue.length === 0
     const isNullable = NULLABLE_VALUES.includes(rawValue)
-    const isNumber = isEmpty ? false : !isNaN(value)
+    const isNumber = !isNaN(value)
 
-    if (isNumber)
+    if (isNumber && !isEmpty)
       return {
         ok: true,
         value
@@ -96,24 +96,9 @@ export function NumericInput(props: Props) {
     if (props.validator)
       props.validator.value = value
 
-    if (props.validator && isValidatorDispatchedValidate)
+    if (props.validator && validated)
       props.validator.Validate()
   }
-
-  React.useEffect(() => {
-    if (!props.validator) return
-
-    const callback = props.validator.OnValidate(() => {
-      if (!props.validator) return
-
-      setIsValidatorDispatchedValidate(true)
-      const errorMessages = props.validator.invalidRulesMessages
-
-      setMessageErrors(errorMessages.length ? errorMessages : [])
-    })
-
-    return () => props.validator?.RemoveOnValidateEvent(callback)
-  }, [])
 
   React.useEffect(() => {
     updateValue(defaultValue)

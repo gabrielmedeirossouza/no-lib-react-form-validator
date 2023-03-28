@@ -1,6 +1,7 @@
 import React from 'react'
 import { StringValidator } from '../../../validators/string-validator'
 import { BaseInput } from '../base-input'
+import { useValidatorErrorMessages } from '../base/useValidatorErrorMessages'
 import { Input } from './styles'
 
 interface Props {
@@ -12,8 +13,7 @@ interface Props {
 
 export function TextInput(props: Props) {
   const inputRef = React.useRef<HTMLInputElement>(null)
-  const [messageErrors, setMessageErrors] = React.useState<string[]>([])
-  const [isValidatorDispatchedValidate, setIsValidatorDispatchedValidate] = React.useState(false)
+  const { validated, messageErrors } = useValidatorErrorMessages(props.validator)
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     const value = event.target.value.trim()
@@ -27,25 +27,9 @@ export function TextInput(props: Props) {
     if (props.validator)
       props.validator.value = value
 
-    if (props.validator && isValidatorDispatchedValidate) {
+    if (props.validator && validated)
       props.validator.Validate()
-    }
   }
-
-  React.useEffect(() => {
-    if (!props.validator) return
-
-    const callback = props.validator.OnValidate(() => {
-      if (!props.validator) return
-
-      setIsValidatorDispatchedValidate(true)
-      const errorMessages = props.validator.invalidRulesMessages
-
-      setMessageErrors(errorMessages.length ? errorMessages : [])
-    })
-
-    return () => props.validator?.RemoveOnValidateEvent(callback)
-  }, [])
 
   return (
     <BaseInput label={props.label} messageErrors={messageErrors}>
