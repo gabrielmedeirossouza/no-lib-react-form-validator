@@ -14,7 +14,7 @@ export class NumberValidator extends ValidatorProtocol<number> {
       if (value === 0)
         return this.Fail(message ?? "The value cannot be zero.")
 
-      return this.Ok(value)
+      return this.Ok()
     })
 
     return this
@@ -25,7 +25,7 @@ export class NumberValidator extends ValidatorProtocol<number> {
       if (value < min)
         return this.Fail(message ?? `The min value must be equal or greater than ${value}.`)
 
-      return this.Ok(value)
+      return this.Ok()
     })
 
     return this
@@ -36,7 +36,7 @@ export class NumberValidator extends ValidatorProtocol<number> {
       if (value > max)
         return this.Fail(message ?? `The max value must be equal or less than ${value}.`)
 
-      return this.Ok(value)
+      return this.Ok()
     })
 
     return this

@@ -36,10 +36,10 @@ export abstract class ValidatorProtocol<T> {
     this._callbackRules.add(rule)
   }
 
-  protected Ok(value: T): ValidatorOk<T> {
+  protected Ok(): ValidatorOk<T> {
     return {
       ok: true,
-      value
+      value: this.value
     }
   }
 

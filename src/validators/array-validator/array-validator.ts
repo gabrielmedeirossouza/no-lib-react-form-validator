@@ -14,7 +14,7 @@ export class ArrayValidator<T extends string | number> extends ValidatorProtocol
       if (value.length === 0)
         return this.Fail(message ?? `Field ${this.fieldName} cannot be empty.`)
 
-      return this.Ok(value)
+      return this.Ok()
     })
 
     return this
@@ -27,7 +27,7 @@ export class ArrayValidator<T extends string | number> extends ValidatorProtocol
       if (containItemListInsideValues)
         return this.Fail(message ?? `Field ${this.fieldName} cannot contain (${values.join(", ")}).`)
 
-      return this.Ok(values)
+      return this.Ok()
     })
 
     return this
@@ -40,7 +40,7 @@ export class ArrayValidator<T extends string | number> extends ValidatorProtocol
       if (!containItemListInsideValues)
         return this.Fail(message ?? `Field ${this.fieldName} must contain (${values.join(", ")}).`)
 
-      return this.Ok(values)
+      return this.Ok()
     })
 
     return this

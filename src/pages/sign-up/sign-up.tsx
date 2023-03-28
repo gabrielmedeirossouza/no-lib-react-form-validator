@@ -10,10 +10,14 @@ export function SignUp() {
     form.preventDefault()
     validatorPool.NotifyValidates()
 
-    if (!validatorPool.isValid) return
+    if (!validatorPool.isValid) {
+      console.log("Validator error detected:")
+      console.log(validators)
+      return
+    }
 
-    console.log("Calling service API with data:")
-    console.log(JSON.stringify(validators, null, 2))
+    console.log("All fields are validated:")
+    console.log(validators)
   }
 
   return (

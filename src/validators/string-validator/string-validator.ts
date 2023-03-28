@@ -16,7 +16,7 @@ export class StringValidator extends ValidatorProtocol<string> {
       if (isEmpty)
         return this.Fail(message ?? "Field cannot be empty.")
 
-      return this.Ok(value)
+      return this.Ok()
     })
 
     return this
@@ -27,7 +27,7 @@ export class StringValidator extends ValidatorProtocol<string> {
       if (value.length < min)
         return this.Fail(message ?? `Field ${this.fieldName} must be equal or greater than ${min}.`)
 
-      return this.Ok(value)
+      return this.Ok()
     })
 
     return this
@@ -38,7 +38,7 @@ export class StringValidator extends ValidatorProtocol<string> {
       if (value.length > max)
         return this.Fail(message ?? `Field ${this.fieldName} must be equal or less than ${max}.`)
 
-      return this.Ok(value)
+      return this.Ok()
     })
 
     return this
@@ -49,7 +49,7 @@ export class StringValidator extends ValidatorProtocol<string> {
       if (compare.value !== value)
         return this.Fail(message ?? `Field ${this.fieldName} must be equal to ${compare.fieldName}.`)
 
-      return this.Ok(value)
+      return this.Ok()
     })
 
     compare.OnValidate(() => this.Validate())
@@ -65,7 +65,7 @@ export class StringValidator extends ValidatorProtocol<string> {
       if (!isValidEmail)
         return this.Fail(message ?? `Field ${this.fieldName} must be a valid email.`)
 
-      return this.Ok(value)
+      return this.Ok()
     })
 
     return this
