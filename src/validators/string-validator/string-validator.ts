@@ -1,12 +1,8 @@
 import { ValidatorProtocol } from "../validator-protocol"
 
 export class StringValidator extends ValidatorProtocol<string> {
-  public value = ""
-  public fieldName: string
-
   constructor(fieldName: string) {
-    super()
-    this.fieldName = fieldName
+    super("", fieldName)
   }
 
   public NotEmpty(message?: string): StringValidator {

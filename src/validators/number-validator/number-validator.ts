@@ -1,12 +1,8 @@
 import { ValidatorProtocol } from "../validator-protocol"
 
 export class NumberValidator extends ValidatorProtocol<number> {
-  public value = 0
-  public fieldName: string
-
   constructor(fieldName: string) {
-    super()
-    this.fieldName = fieldName
+    super(0, fieldName)
   }
 
   public NotZero(message?: string): NumberValidator {

@@ -12,13 +12,19 @@ type ValidatorRule<T> = ValidatorOk<T> | ValidatorFail
 type ValidatorRuleCallback<T> = (value: T) => ValidatorRule<T>
 
 export abstract class ValidatorProtocol<T> {
-  public abstract value: T
-  public abstract fieldName: string
+  public value: T
   private _isValid = true
   private _rules: ValidatorRule<T>[] = []
   private _invalidRulesMessages: string[] = []
   private readonly _callbackRules: Set<ValidatorRuleCallback<T>> = new Set()
   private readonly _onValidateCallbacks: Array<() => void> = []
+
+  constructor(
+    initialValue: T,
+    public readonly fieldName: string
+  ) {
+    this.value = initialValue
+  }
 
   public get isValid(): boolean {
     return this._isValid

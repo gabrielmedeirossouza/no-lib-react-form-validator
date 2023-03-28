@@ -1,12 +1,8 @@
 import { ValidatorProtocol } from "../validator-protocol";
 
 export class ArrayValidator<T extends string | number> extends ValidatorProtocol<T[]> {
-  public value: T[] = [];
-  public fieldName: string;
-
   constructor(fieldName: string) {
-    super()
-    this.fieldName = fieldName
+    super([], fieldName)
   }
 
   public NotEmpty(message?: string): ArrayValidator<T> {
